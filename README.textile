@@ -199,7 +199,7 @@ h3. Misc.
 
 h4. Write raw content
 
-By default string converted to xml text are HTML escaped (e.g. “<” are transformed into “@&@lt;”). You can disable this behavior by using the @raw@ method:
+By default string converted to xml text are HTML escaped (e.g. “<” are transformed into “&amp;lt;”). You can disable this behavior by using the @raw@ method:
 
 bc. def myHtml5dtd: Xml = "<!DOCTYPE html>\n".raw
 
