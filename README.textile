@@ -2,15 +2,9 @@ h1. Glitter: an embedded Scala DSL for writing HTML
 
 h2. Why?
 
-I like the comfort of *static typing*, so, inspired from "Blaze HTML":http://jaspervdj.be/blaze/, Glitter is a
-proof of concept of an *embedded Scala DSL* allowing to write HTML templates with a "haml":http://www.haml-lang.com
-like syntax, but directly *in your Scala code*.
+I like the comfort of *static typing*, so, inspired from "Blaze HTML":http://jaspervdj.be/blaze/, Glitter is a proof of concept of an *embedded Scala DSL* allowing to write HTML templates with a "haml":http://www.haml-lang.com like syntax, but directly *in your Scala code*.
 
-I want to give a try to type safe templates in real world web sites, just to see if it matches all our needs beyond
-providing the strength of static typing.
-
-You can see "my personal website":https://github.com/julienrf/julienrf/blob/master/src/main/scala/julienrf/Site.scala
-as an example of website entirely written in Scala with Glitter.
+You can see "my personal website":https://github.com/julienrf/julienrf/blob/master/src/main/scala/julienrf/Site.scala as an example of website entirely written in Scala with Glitter.
 
 h2. Overview
 
@@ -93,8 +87,7 @@ If you try to render this template, you will get the @<div />@ string:
 bc. scala> Templates.index.render
 res0: String = <div />
 
-Under the hood it uses an implicit conversion from @Symbol@ to the @EmptyTag@ case class. You need to explicit
-the return type of your template to make it work.
+Under the hood it uses an implicit conversion from @Symbol@ to the @EmptyTag@ case class. You need to explicit the return type of your template to make it work.
 
 You can also write plain text, using a @String@:
 
@@ -116,8 +109,7 @@ bc.   def index: Xml = 'span :: "foo" | 'span :: "bar"
 bc. scala> Templates.index.render                                          
 res3: String = <span>foo</span><span>bar</span>
 
-As you can see, the @::@ operator has a higher precedence than the @|@ operator. If you want to nest several elements
-in a tag you need to enclose them in brackets:
+As you can see, the @::@ operator has a higher precedence than the @|@ operator. If you want to nest several elements in a tag you need to enclose them in brackets:
 
 bc.   def index: Xml = 'div :: ('span :: "foo" | 'span :: "bar")
 
@@ -138,8 +130,7 @@ h2. Advanced Usage
 
 h3. Layouts and fragments
 
-Since Glitter templates are nothing but Scala functions, you can use function composition to have reusable templates
-fragments:
+Since Glitter templates are nothing but Scala functions, you can use function composition to have reusable templates fragments:
 
 bc.. import glitter._
 import glitter.Glitter._
@@ -173,9 +164,7 @@ object Templates {
     )
 }
 
-p. I’m used to prefix templates fragments by an underscore, but that’s not mandatory at all. So, here you see how you
-can simulate what’s usually called template inheritance (the @index@ template “extends” the @main@ template layout) and
-template inclusion (@main@ layout “includes” the fragments @_header@, @_footer@ and @_content@), just by calling
+p. I’m used to prefix templates fragments by an underscore, but that’s not mandatory at all. So, here you see how you can simulate what’s usually called template inheritance (the @index@ template “extends” the @main@ template layout) and template inclusion (@main@ layout “includes” the fragments @_header@, @_footer@ and @_content@), just by calling
 
 h3. Control structures
 
@@ -184,28 +173,24 @@ You can use the Scala @if@ directly:
 bc. def _userInfo(user: User): Xml =
   'div :: (if (user.isAdmin) "foo" else "bar")
 
-To iterate through a collection you can use the @forM[A](elmts: Iterable[A])(bind: A => Xml): Xml@ control structure
-provided by Glitter:
+To iterate through a collection you can use the @forM[A](elmts: Iterable[A])(bind: A => Xml): Xml@ control structure provided by Glitter:
 
 bc. def listArticles(articles: List[Article]): Xml =
   'ul :: forM(articles) ('li :: _.name)
 
-The @forM@ function takes an @Iterable[A]@ as its first parameter and a function of type @A => Xml@. It produces a
-sequence of xml content (using the @|@ operator between all the collection elements).
+The @forM@ function takes an @Iterable[A]@ as its first parameter and a function of type @A => Xml@. It produces a sequence of xml content (using the @|@ operator between all the collection elements).
 
 If the sequence is emtpy, the @forM@ function returns the @Empty@ object which is of type @Xml@ but renders to nothing.
 
 h3. Render templates
 
-You can render any @Xml@ content by using its @render(r: Renderer)@ function. By default this function will use an
-implicit simple renderer writing the content into a string, as XHTML (without any kind of formatting).
+You can render any @Xml@ content by using its @render(r: Renderer)@ function. By default this function will use an implicit simple renderer writing the content into a string, as XHTML (without any kind of formatting).
 
 h3. Misc.
 
 h4. Write raw content
 
-By default string converted to xml text are HTML escaped (e.g. “<” are transformed to “&lt;”). You can disable
-this behavior using the @raw@ method:
+By default string converted to xml text are HTML escaped (e.g. “<” are transformed to “&lt;”). You can disable this behavior using the @raw@ method:
 
 bc. def myHtml5dtd: Xml = "<!DOCTYPE html>\n".raw
 
