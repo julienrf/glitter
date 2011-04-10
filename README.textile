@@ -136,27 +136,36 @@ bc.. import glitter._
 import glitter.Glitter._
 
 object Layouts {
+
+  // Main layout
   def main(content: Xml): Xml =
     html5dtd | 'html %('lang->"en") :: (
         'head :: 'title :: "Title"
-      | _header
-      | _content(content)
-      | _footer
+      | 'body (
+            _header
+          | _content(content)
+          | _footer
+      )
     )
 
+  // Reusable header fragment
   def _header: Xml =
     'header (
         'h1 :: 'a %('href->"/") :: "Home"
     )
 
+  // Reusable footer fragment
   def _footer: Xml =
     'footer :: "© 2011"
 
+  // Reusable content fragment
   def _content(content: Xml): Xml =
     'section :: content
 }
 
 object Templates {
+
+  // A template “extending” the main layout
   def index: Xml =
     Layout.main(
         'h2 :: "Index"
@@ -164,7 +173,7 @@ object Templates {
     )
 }
 
-p. I’m used to prefix templates fragments by an underscore, but that’s not mandatory at all. So, here you see how you can simulate what’s usually called template inheritance (the @index@ template “extends” the @main@ template layout) and template inclusion (@main@ layout “includes” the fragments @_header@, @_footer@ and @_content@), just by calling
+p. I’m used to prefix templates fragments by an underscore, but that’s not mandatory at all. So, here you see how you can simulate what’s usually called template inheritance (the @index@ template “extends” the @main@ template layout) and template inclusion (@main@ layout “includes” the fragments @_header@, @_footer@ and @_content@).
 
 h3. Control structures
 
@@ -176,9 +185,9 @@ bc. def _userInfo(user: User): Xml =
 To iterate through a collection you can use the @forM[A](elmts: Iterable[A])(bind: A => Xml): Xml@ control structure provided by Glitter:
 
 bc. def listArticles(articles: List[Article]): Xml =
-  'ul :: forM(articles) ('li :: _.name)
+  'ul :: forM (articles) ('li :: _.name)
 
-The @forM@ function takes an @Iterable[A]@ as its first parameter and a function of type @A => Xml@. It produces a sequence of xml content (using the @|@ operator between all the collection elements).
+The @forM@ function takes an @Iterable[A]@ and a function of type @A => Xml@ as parameters. It produces a sequence of xml content using the @|@ operator between all the collection elements after having bound each one with the @bind@ function.
 
 If the sequence is emtpy, the @forM@ function returns the @Empty@ object which is of type @Xml@ but renders to nothing.
 
@@ -190,7 +199,7 @@ h3. Misc.
 
 h4. Write raw content
 
-By default string converted to xml text are HTML escaped (e.g. “<” are transformed to “&lt;”). You can disable this behavior using the @raw@ method:
+By default string converted to xml text are HTML escaped (e.g. “<” are transformed into “@&lt;@”). You can disable this behavior by using the @raw@ method:
 
 bc. def myHtml5dtd: Xml = "<!DOCTYPE html>\n".raw
 
