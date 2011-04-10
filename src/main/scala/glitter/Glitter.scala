@@ -30,12 +30,11 @@ object Glitter {
 
   // Useful helpers
   /** HTML 5 Doctype declaration */
-  def html5dtd = Text("<!DOCTYPE html>\n")
+  def html5dtd = "<!DOCTYPE html>\n".raw
 
-  /** Iterate through a collection. Use it as you would use `foreach`. */
-  def forM[A] (it: Iterable[A])(f: A => Xml) = {
-    it.foldLeft[Xml](Empty)((acc, elmt) => acc | f(elmt)) // FIXME I would like to use something like: Nodes(it map f)
-  }
+  /** Iterate through a collection. */
+  def forM[A] (elmts: Iterable[A])(bind: A => Xml) =
+    elmts.foldLeft[Xml](Empty)((acc, elmt) => acc | bind(elmt))
 
   def escapeHtml(s: String) = s // TODO
 }
@@ -59,7 +58,7 @@ case class Nodes(children: List[Xml]) extends Xml {
   override def | (sibling: Xml) = Nodes(sibling :: children)
 }
 
-/** A tag witout content, e.g. `&lt;br /&gt;` */
+/** A tag witout content, e.g. `<br />` */
 case class EmptyTag(name: String,
                attr: Map[String, String] = Map.empty) extends Xml {
 
@@ -70,7 +69,7 @@ case class EmptyTag(name: String,
   def apply(content: Xml) = Tag(name, content, attr)
 }
 
-/** A tag with content, e.g. `&lt;span&gt;foo&lt;/span&gt;` */
+/** A tag with content, e.g. `<span>foo</span>` */
 case class Tag(name: String, content: Xml, attr: Map[String, String] = Map.empty) extends Xml
 
 /** Raw text */
