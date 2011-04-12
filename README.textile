@@ -10,8 +10,7 @@ h2. Overview
 
 Here is a small example giving a quick overview of what Glitter is.
 
-bc.. import glitter.Glitter._
-import glitter.Xml
+bc.. import glitter._
 
 object Templates {
   def layout(body: Xml) =
@@ -64,13 +63,12 @@ res7: String =
     </ul>
   </body>
 </html>
-}}}
 
 h3. Syntax
 
-To use Glitter you first need to import the definitions of the @glitter.Glitter@ object:
+To use Glitter you first need to import the definitions of the @glitter@ package object:
 
-bc. import glitter.Glitter._
+bc. import glitter._
 
 Then write your templates, e.g. in an object:
 
@@ -133,7 +131,6 @@ h3. Layouts and fragments
 Since Glitter templates are nothing but Scala functions, you can use function composition to have reusable templates fragments:
 
 bc.. import glitter._
-import glitter.Glitter._
 
 object Layouts {
 
