@@ -17,25 +17,6 @@
 package glitter
 
 import renderer.Renderer
-import renderer.defaultRenderer
-
-object Glitter {
-
-  // Implicit conversions
-  implicit def symbolToEmptyTag(s: Symbol) = EmptyTag(s.name)
-  
-  implicit def strToText(s: String) = Text(xml.Utility.escape(s))
-
-  implicit def strToStringWrapper(s: String) = new StringWrapper(s)
-
-  // Useful helpers
-  /** HTML 5 Doctype declaration */
-  def html5dtd = "<!DOCTYPE html>\n".raw
-
-  /** Iterate through a collection. */
-  def forM[A] (elmts: Traversable[A])(bind: A => Xml) =
-    elmts.foldLeft[Xml](Empty)((acc, elmt) => acc | bind(elmt))
-}
 
 /** Base class for xml content */
 sealed abstract class Xml {

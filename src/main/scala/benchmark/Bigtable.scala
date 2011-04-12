@@ -1,6 +1,6 @@
 package benchmark
 
-import glitter.Glitter._
+import glitter._
 
 object Bigtable {
   def template(table: Array[Array[Int]]) =

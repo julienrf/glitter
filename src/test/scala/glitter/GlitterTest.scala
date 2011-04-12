@@ -18,7 +18,7 @@ package glitter
 
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
-import glitter.Glitter._
+import glitter._
 import glitter.renderer.defaultRenderer
 
 class GlitterTest extends FunSuite with ShouldMatchers {
@@ -53,7 +53,7 @@ class GlitterTest extends FunSuite with ShouldMatchers {
   }
   
   test("HTML 5 DTD") {
-    val dtd = Glitter.html5dtd
+    val dtd = html5dtd
     dtd should be (Text("<!DOCTYPE html>\n"))
   }
   
