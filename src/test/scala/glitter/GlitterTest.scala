@@ -18,8 +18,6 @@ package glitter
 
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
-import glitter._
-import glitter.renderer.defaultRenderer
 
 class GlitterTest extends FunSuite with ShouldMatchers {
   test("Strings are implicitly converted to text") {

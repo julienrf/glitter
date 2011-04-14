@@ -1,12 +1,13 @@
 package object glitter {
-  import renderer.defaultRenderer
 
-  // Implicit conversions
+  // Implicits
   implicit def symbolToEmptyTag(s: Symbol) = EmptyTag(s.name)
   
   implicit def strToText(s: String) = Text(xml.Utility.escape(s))
 
   implicit def strToStringWrapper(s: String) = new StringWrapper(s)
+  
+  implicit val defaultRenderer = renderer.TextRenderer
 
   // Useful helpers
   /** HTML 5 Doctype declaration */
