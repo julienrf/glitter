@@ -1,70 +1,34 @@
-h1. Glitter: an embedded Scala DSL for writing HTML
+h1. Glitter, an embedded Scala DSL for writing HTML
 
 h2. Why?
 
-I like the comfort of *static typing*, so, inspired from "Blaze HTML":http://jaspervdj.be/blaze/, Glitter is a proof of concept of an *embedded Scala DSL* allowing to write HTML templates with a "haml":http://www.haml-lang.com like syntax, but directly *in your Scala code*.
+I like the comfort of *static typing*, so, inspired from "Blaze HTML":http://jaspervdj.be/blaze/, Glitter is a proof of concept of an *embedded Scala DSL* allowing to write HTML templates with a "haml":http://www.haml-lang.com like syntax, but directly *in your Scala code*. "Read more on my motivations":julienrf/glitter/wiki/Motivation
 
 You can see "my personal website":https://github.com/julienrf/julienrf/tree/master/src/main/scala/julienrf as an example of website entirely written in Scala with Glitter.
 
 h2. Overview
 
-Here is a small example giving a quick overview of what Glitter is.
+See "this gist":https://gist.github.com/914346 for a quick overview of what Glitter is. The first file defines some reusable HTML fragments and the two following files show the results of rendering them.
 
-bc.. import glitter._
+h2. Install
 
-object Templates {
-  def layout(body: Xml) =
-    html5dtd | 'html (
-        'head :: 'title :: "Glitter is amazing!"
-      | 'body :: body
-    )
+Download the latest jar from the "downloads section":glitter/archives/master and add it to your classpath.
 
-  def show(name: String) =
-    layout (
-        'h1 :: "Show user"
-      | 'p :: ("Hello " | 'strong(name) | "!")
-    )
+h3. Using sbt
 
-  def index(users: List[String]) =
-    layout (
-        'h1 :: "User list"
-      | 'ul %('class->"user-list") :: forM (users) (user => 'li :: user)
-    )
-}
+You can use it in your sbt project by adding this line (adapt it to the latest release version) :
 
-p. You can try to render these two templates:
+bc. val glitter = "glitter" % "glitter" % "0.1" from "file:///where/you/downloaded/glitter-0.1.jar"
 
-bc.. scala> Templates.show("Julien").render
-res6: String = 
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Glitter is amazing!</title>
-  </head>
-  <body>
-    <h1>Show user</h1>
-    <p>Hello <strong>Julien</strong>!</p>
-  </body>
-</html>
+h2. Hack
 
-scala> Templates.index(List("Julien", "Paul", "Christopher")).render
-res7: String = 
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Glitter is amazing!</title>
-  </head>
-  <body>
-    <h1>User list</h1>
-    <ul class="user-list">
-      <li>Julien</li>
-      <li>Paul</li>
-      <li>Christopher</li>
-    </ul>
-  </body>
-</html>
+Fetch the sources by cloning this repository:
 
-h3. Syntax
+bc. git clone git://github.com/julienrf/glitter.git
+
+Glitter is defined as a "sbt":http://code.google.com/p/simple-build-tool/ project. You can run the tests using the @sbt test@ command, or run the integrated bigtable benchmark with @sbt run@.
+
+h2. Syntax
 
 To use Glitter you first need to import the definitions of the @glitter@ package object:
 
