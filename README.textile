@@ -2,7 +2,7 @@ h1. Glitter, an embedded Scala DSL for writing HTML
 
 h2. Why?
 
-I like the comfort of *static typing*, so, inspired from "Blaze HTML":http://jaspervdj.be/blaze/, Glitter is a proof of concept of an *embedded Scala DSL* allowing to write HTML templates with a "haml":http://www.haml-lang.com like syntax, but directly *in your Scala code*. "Read more on my motivations":julienrf/glitter/wiki/Motivation
+I like the comfort of *static typing*, so, inspired from "Blaze HTML":http://jaspervdj.be/blaze/, Glitter is a proof of concept of an *embedded Scala DSL* allowing to write HTML templates with a "haml":http://www.haml-lang.com like syntax, but directly *in your Scala code*. ("Read more on my motivations…":glitter/wiki/Motivation)
 
 You can see "my personal website":https://github.com/julienrf/julienrf/tree/master/src/main/scala/julienrf as an example of website entirely written in Scala with Glitter.
 
