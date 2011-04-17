@@ -4,3 +4,4 @@ src_managed/
 project/boot
 /.classpath
 /.project
+.scala_dependencies

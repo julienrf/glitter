@@ -7,7 +7,7 @@ package object glitter {
 
   implicit def strToStringWrapper(s: String) = new StringWrapper(s)
   
-  implicit val defaultRenderer = renderer.TextRenderer
+  implicit val defaultRenderer = renderer.BufferedTextRenderer
 
   // Useful helpers
   /** HTML 5 Doctype declaration */

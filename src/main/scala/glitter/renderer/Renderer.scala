@@ -31,11 +31,37 @@ trait Renderer {
 object TextRenderer extends Renderer {
   override def render(xml: Xml) = xml match {
     case Nodes(children) => children.foldRight("")((node, acc) => acc + render(node))
-    case Tag(name, content, attr) => "<"+name+renderAttr(attr)+">"+render(content)+"</"+name+">"
-    case EmptyTag(name, attr) => "<"+name+renderAttr(attr)+" />"
+    case Tag(name, content, attr) => "<"+name+RenderAttr(attr)+">"+render(content)+"</"+name+">"
+    case EmptyTag(name, attr) => "<"+name+RenderAttr(attr)+" />"
     case Text(content) => content
     case Empty => ""
   }
+}
 
-  private def renderAttr(attr: Map[String, String]) = attr.foldLeft("")((acc, a) => acc+" "+a._1+"=\""+a._2+"\"")
+object BufferedTextRenderer extends Renderer {
+  
+  override def render(xml: Xml) = {
+    
+    val buffer = new StringBuffer
+    
+    def append(xml: Xml): Unit = xml match {
+      case Nodes(children) => children.reverse foreach append
+      case Tag(name, content, attr) => {
+        buffer.append("<"+name+RenderAttr(attr)+">")
+        append(content)
+        buffer.append("</"+name+">")
+      }
+      case EmptyTag(name, attr) => buffer.append("<"+name+RenderAttr(attr)+" />")
+      case Text(content) => buffer.append(content)
+      case Empty =>
+    }
+    
+    append(xml)
+    
+    buffer.toString
+  }
+}
+
+object RenderAttr {
+  def apply(attr: Map[String, String]) = attr.foldLeft("")((acc, a) => acc+" "+a._1+"=\""+a._2+"\"")
 }
