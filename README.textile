@@ -143,12 +143,12 @@ You can use the Scala @if@ directly:
 bc. def _userInfo(user: User): Xml =
   'div :: (if (user.isAdmin) "foo" else "bar")
 
-To iterate through a collection you can use the @forM[A](elmts: Iterable[A])(bind: A => Xml): Xml@ control structure provided by Glitter:
+To iterate through a collection you can use the @forM[A](elmts: Traversable[A])(bind: A => Xml): Xml@ control structure provided by Glitter:
 
 bc. def listArticles(articles: List[Article]): Xml =
   'ul :: forM (articles) ('li :: _.name)
 
-The @forM@ function takes an @Iterable[A]@ and a function of type @A => Xml@ as parameters. It produces a sequence of xml content using the @|@ operator between all the collection elements after having bound each one with the @bind@ function.
+The @forM@ function takes an @Traversable[A]@ and a function of type @A => Xml@ as parameters. It produces a sequence of xml content using the @|@ operator between all the collection elements after having bound each one with the @bind@ function.
 
 If the sequence is emtpy, the @forM@ function returns the @Empty@ object which is of type @Xml@ but renders to nothing.
 
@@ -166,8 +166,10 @@ bc. def myHtml5dtd: Xml = "<!DOCTYPE html>\n".raw
 
 h4. Empty
 
-Glitter provides an object of type @Xml@ but doing nothing: @Empty@. It may be useful in some cases, eg:
+Glitter provides an object of type @Xml@ but doing nothing: @Empty@. It may be useful in some cases, e.g.:
 
 bc. def _adminArea(user: User): Xml =
-  if (user.isAdmin) 'a %('href->"/admin") :: "Manage"
-  else Empty
+  if (user.isAdmin)
+    'a %('href->"/admin") :: "Manage"
+  else
+    Empty
