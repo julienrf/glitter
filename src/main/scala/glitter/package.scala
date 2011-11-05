@@ -3,6 +3,10 @@ package object glitter {
   // Implicits
   implicit def symbolToEmptyTag(s: Symbol) = EmptyTag(s.name)
   
+  implicit def symbolToAttr(s: Symbol) = Attribute(s.name)
+  
+  implicit def tupleToAttr(t: (Symbol, String)) = Attribute(t._1.name, Some(t._2))
+  
   implicit def strToText(s: String) = Text(xml.Utility.escape(s))
 
   implicit def strToStringWrapper(s: String) = new StringWrapper(s)

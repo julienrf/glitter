@@ -39,17 +39,17 @@ case class Nodes(children: List[Xml]) extends Xml {
 
 /** A tag witout content, e.g. `<br />` */
 case class EmptyTag(name: String,
-               attr: Map[String, String] = Map.empty) extends Xml {
+               attr: List[Attribute] = Nil) extends Xml {
 
   /** Set attributes to this tag */
-  def % (as: (Symbol, String)*) = EmptyTag(name, attr ++ (as map (a =>(a._1.name, a._2))))
+  def % (as: Attribute*) = EmptyTag(name, as ++: attr)
 
   /** Nest some content inside this node */
   def apply(content: Xml) = Tag(name, content, attr)
 }
 
 /** A tag with content, e.g. `<span>foo</span>` */
-case class Tag(name: String, content: Xml, attr: Map[String, String] = Map.empty) extends Xml
+case class Tag(name: String, content: Xml, attr: List[Attribute] = Nil) extends Xml
 
 /** Raw text */
 case class Text(content: String) extends Xml
@@ -58,6 +58,8 @@ case class Text(content: String) extends Xml
 object Empty extends Xml {
   override def | (sibling: Xml) = sibling
 }
+
+case class Attribute(name: String, value: Option[String] = None)
 
 class StringWrapper(s: String) {
   def raw = Text(s)

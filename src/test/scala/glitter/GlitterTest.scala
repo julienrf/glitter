@@ -35,6 +35,14 @@ class GlitterTest extends FunSuite with ShouldMatchers {
     xml.render should be ("<foo bar=\"baz\" />")
   }
   
+  test("Attribute with no value") {
+    val xml = 'foo % 'bar
+    xml.render should be ("<foo bar />")
+    
+    val xml2 = 'foo %('bar->"baz", 'bah) 
+    xml2.render should be ("<foo bar=\"baz\" bah />")
+  }
+  
   test("Nested tags") {
     val xml = 'foo :: 'bar
     xml.render should be ("<foo><bar /></foo>")

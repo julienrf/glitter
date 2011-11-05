@@ -63,5 +63,5 @@ object BufferedTextRenderer extends Renderer {
 }
 
 object RenderAttr {
-  def apply(attr: Map[String, String]) = attr.foldLeft("")((acc, a) => acc+" "+a._1+"=\""+a._2+"\"")
+  def apply(attr: List[Attribute]) = attr.foldLeft("")((acc, a) => acc+" "+ a.value.map(a.name+"=\""+_+"\"").getOrElse(a.name))
 }
