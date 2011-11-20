@@ -31,7 +31,7 @@ class GlitterTest extends FunSuite with ShouldMatchers {
   }
   
   test("Attach attributes to tags") {
-    val xml = 'foo %('bar->"baz")
+    val xml = 'foo % 'bar~"baz"
     xml.render should be ("<foo bar=\"baz\" />")
   }
   
@@ -39,8 +39,13 @@ class GlitterTest extends FunSuite with ShouldMatchers {
     val xml = 'foo % 'bar
     xml.render should be ("<foo bar />")
     
-    val xml2 = 'foo %('bar->"baz", 'bah) 
+    val xml2 = 'foo % ('bar~"baz", 'bah) 
     xml2.render should be ("<foo bar=\"baz\" bah />")
+  }
+  
+  test("Several attributes") {
+    val xml = 'foo % 'bar~"baz" % 'bah~"plop"
+    xml.render should be ("""<foo bar="baz" bah="plop" />""")
   }
   
   test("Nested tags") {

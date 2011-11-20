@@ -42,7 +42,7 @@ case class EmptyTag(name: String,
                attr: List[Attribute] = Nil) extends Xml {
 
   /** Set attributes to this tag */
-  def % (as: Attribute*) = EmptyTag(name, as ++: attr)
+  def % (as: Attribute*) = EmptyTag(name, attr ++ as)
 
   /** Nest some content inside this node */
   def apply(content: Xml) = Tag(name, content, attr)

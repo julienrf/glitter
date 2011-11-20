@@ -7,6 +7,10 @@ package object glitter {
   
   implicit def tupleToAttr(t: (Symbol, String)) = Attribute(t._1.name, Some(t._2))
   
+  implicit def makeTuple[A](a: A) = new {
+    def ~[B](b: B) = (a, b)
+  }
+  
   implicit def strToText(s: String) = Text(xml.Utility.escape(s))
 
   implicit def strToStringWrapper(s: String) = new StringWrapper(s)
