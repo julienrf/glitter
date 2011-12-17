@@ -1,12 +1,8 @@
-h1. Glitter, an embedded Scala DSL for writing HTML
-
-h2. Why?
-
-I like the comfort of *static typing*, so, inspired from "Blaze HTML":http://jaspervdj.be/blaze/, Glitter is a proof of concept of an *embedded Scala DSL* allowing to write HTML templates with a "haml":http://www.haml-lang.com like syntax, but directly *in your Scala code*. ("Read more on my motivations…":glitter/wiki/Motivation)
-
-You can see "my personal website":https://github.com/julienrf/julienrf/tree/master/src/main/scala/julienrf as an example of website entirely written in Scala with Glitter.
+h1. Glitter, an embedded Scala DSL for writing XML
 
 h2. Overview
+
+Glitter is an embedded DSL allowing to write XML in a *concise*, *type safe* and *composable* way.
 
 See "this gist":https://gist.github.com/914346 for a quick overview of what Glitter is. The first file defines some reusable HTML fragments and the two following files show the results of rendering them.
 
@@ -16,9 +12,9 @@ Download the latest jar from the "downloads section":glitter/archives/master and
 
 h3. Using sbt
 
-You can use it in your sbt project by adding this line (adapt it to the latest release version) :
+You can use it in your "sbt":https://github.com/harrah/xsbt/wiki project by adding this line in the @build.sbt@ file (adapt it to the latest release version):
 
-bc. val glitter = "glitter" % "glitter" % "0.1" from "file:///where/you/downloaded/glitter-0.1.jar"
+bc. libraryDependencies += "glitter" % "glitter" % "0.1" from "file:///where/you/downloaded/glitter-0.1.jar"
 
 h2. Hack
 
@@ -26,11 +22,11 @@ Fetch the sources by cloning this repository:
 
 bc. git clone git://github.com/julienrf/glitter.git
 
-Glitter is defined as a "sbt":http://code.google.com/p/simple-build-tool/ project. You can run the tests using the @sbt test@ command, or run the integrated bigtable benchmark with @sbt run@.
+Glitter is defined as a sbt project. You can run the tests using the @sbt test@ command, or run the integrated bigtable benchmark with @sbt run@.
 
 h2. Syntax
 
-To use Glitter you first need to import the definitions of the @glitter@ package object:
+To use Glitter you first need to import the definitions (and implicits) of the @glitter@ package object:
 
 bc. import glitter._
 
@@ -40,53 +36,85 @@ bc. object Templates {
   def index: Xml = …
 }
 
-To make a tag, use a symbol:
+h3. Tags and text
 
-bc.   def index: Xml = 'div
+To write a *tag*, use a symbol:
+
+bc. scala> def index: Xml = 'div
+index: glitter.Xml
 
 If you try to render this template, you will get the @<div />@ string:
 
-bc. scala> Templates.index.render
+bc. scala> index.render
 res0: String = <div />
 
 Under the hood it uses an implicit conversion from @Symbol@ to the @EmptyTag@ case class. You need to explicit the return type of your template to make it work.
 
-You can also write plain text, using a @String@:
+You can also write plain *text*, using a @String@:
 
-bc.   def index: Xml = "foo"
+bc. scala> def index: Xml = "foo"
+index: glitter.Xml
 
-Ok, nothing amazing, you’re right. Now you can nest content in tags using the @::@ operator:
+bc. scala> index.render
+res1: String = foo
 
-bc.   def index: Xml = 'div :: "foo"
+Content can be *nested* using the @::@ operator:
 
-Calling this template will produce the following result:
+bc. scala> def index = 'div :: "foo"
+index: glitter.Tag
 
-bc. scala> Templates.index.render
+bc. scala> index.render
 res2: String = <div>foo</div>
 
-You can also write a sequence of xml content, just separate each element (tag or text) with @|@:
+You can also write a *sequence* of xml content, just separate each element (tag or text) with @|@:
 
-bc.   def index: Xml = 'span :: "foo" | 'span :: "bar"
+bc. scala> def index = 'span :: "foo" | 'span :: "bar"
+index: glitter.Xml
 
-bc. scala> Templates.index.render                                          
+bc. scala> index.render
 res3: String = <span>foo</span><span>bar</span>
 
-As you can see, the @::@ operator has a higher precedence than the @|@ operator. If you want to nest several elements in a tag you need to enclose them in brackets:
+As you can see, the @::@ operator has a higher precedence than the @|@ operator. If you want to nest a sequence of elements in a tag you need to enclose them in brackets:
 
-bc.   def index: Xml = 'div :: ('span :: "foo" | 'span :: "bar")
+bc. scala> def index = 'div :: ('span :: "foo" | 'span :: "bar")
+index: glitter.Tag
 
-Actually the @::@ operator is optional when you use brackets, so the previous example is the same as the following:
+bc. scala> index.render
+res4: String = <div><span>foo</span><span>bar</span></div>
 
-bc.   def index: Xml = 'div ('span :: "foo" | 'span :: "bar")
+Actually you can also nest tags using parenthesis, so the previous example is the same as the following:
 
-Finally, you can add attributes to the tags using the @%@ operator:
+bc. scala> def index = 'div ('span :: "foo" | 'span :: "bar")
+index: glitter.Tag
 
-bc.   def index: Xml = 'img %('src->"/static/images/my_cat.jpg", 'alt->"picture of my cat", 'title->"My Cat")
+bc. scala> index.render
+res5: String = <div><span>foo</span><span>bar</span></div>
 
-bc. scala> Templates.index.render                                                             
+h3. Attributes
+
+You can add attributes to the tags using the @%@ operator:
+
+bc. scala> def img = 'img %('src->"/static/images/my_cat.jpg", 'alt->"picture of my cat", 'title->"My Cat")
+img: glitter.EmptyTag
+
+bc. scala> img.render
 res4: String = <img src="/static/images/my_cat.jpg" alt="picture of my cat" title="My Cat" />
 
-That’s all for the DSL part. Easy, isn’t it?
+The @%@ operator takes one or more tuples as parameters (it can be tuples of @(String, String)@ or @(Symbol, String)@). You can use the Scala built-in syntax to define such tuples, like in the above example, but you can also use the Glitter @~@ operator to define them, so the above example is equivalent to the following definitions:
+
+bc. def img = 'img % 'src~"/static/images/my_cat.jpg" % 'alt~"picture of my cat" % 'title~"My Cat"
+def img = 'img % ('src~"/static/images/my_cat.jpg", 'alt~"picture of my cat", 'title~"My Cat")
+def img = 'img % (('src,"/static/images/my_cat.jpg"), ('alt,"picture of my cat"), ('title,"My Cat"))
+
+For convenience, Glitter allows to add attributes with no value:
+
+bc. scala> def radio = 'input % 'type~"radio" % 'checked
+radio: glitter.EmptyTag
+
+bc. scala> radio.render
+res9: String = <input type="radio" checked />
+
+It can be useful to write HTML5 markup.
 
 h2. Advanced Usage
 
@@ -100,7 +128,7 @@ object Layouts {
 
   // Main layout
   def main(content: Xml): Xml =
-    html5dtd | 'html %('lang->"en") :: (
+    html5dtd | 'html % 'lang~"en" :: (
         'head :: 'title :: "Title"
       | 'body (
             _header
@@ -112,7 +140,7 @@ object Layouts {
   // Reusable header fragment
   def _header: Xml =
     'header (
-        'h1 :: 'a %('href->"/") :: "Home"
+        'h1 :: 'a % 'href~"/" :: "Home"
     )
 
   // Reusable footer fragment
@@ -143,18 +171,16 @@ You can use the Scala @if@ directly:
 bc. def _userInfo(user: User): Xml =
   'div :: (if (user.isAdmin) "foo" else "bar")
 
-To iterate through a collection you can use the @forM[A](elmts: Traversable[A])(bind: A => Xml): Xml@ control structure provided by Glitter:
+To iterate through a collection (or any monadic object) you can use the _monad comprehension_ (_a.k.a_ _for comprehension_) notation:
 
 bc. def listArticles(articles: List[Article]): Xml =
-  'ul :: forM (articles) ('li :: _.name)
-
-The @forM@ function takes an @Traversable[A]@ and a function of type @A => Xml@ as parameters. It produces a sequence of xml content using the @|@ operator between all the collection elements after having bound each one with the @bind@ function.
-
-If the sequence is emtpy, the @forM@ function returns the @Empty@ object which is of type @Xml@ but renders to nothing.
+  'ul :: (
+      for (article <- articles) yield ('li :: article.name)
+  )
 
 h3. Render templates
 
-You can render any @Xml@ content by using its @render(r: Renderer)@ function. By default this function will use an implicit simple renderer writing the content into a string, as XHTML (without any kind of formatting).
+You can render any @Xml@ content by using its @render(r: Renderer)@ function. By default this function will use an implicit simple renderer writing the content into a string, as HTML (without any kind of formatting, empty attributes have no value).
 
 h3. Misc.
 
