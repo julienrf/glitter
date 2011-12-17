@@ -78,4 +78,13 @@ class GlitterTest extends FunSuite with ShouldMatchers {
     val xml = Empty | Empty | 'foo
     xml should be (EmptyTag("foo"))
   }
+  
+  test("Lists") {
+    val xml = 'div :: (
+        for (i <- 1 to 3) yield (
+          Text(i.toString)
+        )
+    )
+    xml.render should be ("<div>123</div>")
+  }
 }

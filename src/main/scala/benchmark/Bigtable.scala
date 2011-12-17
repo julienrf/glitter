@@ -6,9 +6,9 @@ import glitter.renderer._
 object Bigtable {
   def template(table: Array[Array[Int]]) =
     'table (
-        forM (table) (row =>
-          'tr :: forM (row) ('td :: _.toString)
-        )
+        for (row <- table) yield {
+          'tr :: (for (col <- row) yield ('td :: col.toString))
+        }
     )
   
   def bench(name: String, exec: => Unit) = {

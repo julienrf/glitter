@@ -52,13 +52,19 @@ case class EmptyTag(name: String,
 case class Tag(name: String, content: Xml, attr: List[Attribute] = Nil) extends Xml
 
 /** Raw text */
-case class Text(content: String) extends Xml
+case class Text(content: String) extends Xml {
+  override def | (sibling: Xml) = sibling match {
+    case Text(c) => Text(content + c)
+    case _       => super.|(sibling)
+  }
+}
 
-/** Convenient empty xml content (useful for the forM monad) */
-object Empty extends Xml {
+/** Convenient empty xml content */
+case object Empty extends Xml {
   override def | (sibling: Xml) = sibling
 }
 
+/** An XML attrbute. Its value is optional to allow HTML5 empty attributes */
 case class Attribute(name: String, value: Option[String] = None)
 
 class StringWrapper(s: String) {
