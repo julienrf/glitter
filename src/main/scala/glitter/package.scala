@@ -14,7 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package object glitter {
+package glitter
+
+object `package` {
 
   // Implicits
   implicit def symbolToEmptyTag(s: Symbol) = EmptyTag(s.name)
