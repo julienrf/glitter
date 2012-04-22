@@ -196,6 +196,6 @@ Glitter provides an object of type @Xml@ but doing nothing: @Empty@. It may be u
 
 bc. def _adminArea(user: User): Xml =
   if (user.isAdmin)
-    'a %('href->"/admin") :: "Manage"
+    'a % 'href~"/admin" :: "Manage"
   else
     Empty
